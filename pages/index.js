@@ -17,6 +17,7 @@ import {
 
 import { Logo } from "../components/Logo";
 import firebase from "../config/firebase";
+import Link from 'next/link'
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -38,8 +39,15 @@ export default function Home() {
     isSubmitting 
   } =
     useFormik({
-      onSubmit: (values, form) => {
-        console.log(values)
+      onSubmit: async (values, form) => {
+        
+        try {
+
+        const user = await firebase.auth().signInWithEmailAndPassword(values.email, values.password)
+        console.log(user)
+        } catch (error) {
+          console.log('ERROR ', error)
+        }
       },
       validationSchema,
       initialValues: {
@@ -87,24 +95,6 @@ export default function Home() {
           )}
         </FormControl>
 
-        <FormControl p={4} id="username" isRequired>
-          <InputGroup size="lg">
-            <InputLeftAddon children="clocker.work/" />
-            <Input
-              size="lg"
-              type="username"
-              value={values.username}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-          </InputGroup>
-          {touched.username && (
-            <FormHelperText textColor="#e74c3c">
-              {errors.username}
-            </FormHelperText>
-          )}
-        </FormControl>
-
         <Box p={4}>
           <Button 
           colorScheme="blue"
@@ -116,6 +106,8 @@ export default function Home() {
           </Button>
         </Box>
       </Box>
+
+      <Link href="/signup">Ainda não possui conta? Cadastre-se aqui</Link>
     </Container>
   );
 }
