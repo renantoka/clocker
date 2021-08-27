@@ -17,4 +17,4 @@ const firebaseConfig = {
 
  export const persistenceMode = firebaseClient.auth.Auth.Persistence.LOCAL
 
- export default firebaseClient
+ export { firebaseClient }

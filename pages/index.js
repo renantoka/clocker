@@ -1,8 +1,8 @@
-import { Container, Spinner } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { Container, Spinner } from '@chakra-ui/react'
+import { useState, useEffect } from 'react'
 
-import { Login, Reserve } from "../components";
-import { firebaseClient } from "../config/firebase";
+import { Login, Reserve } from '../components'
+import { firebaseClient } from '../config/firebase/client'
 
 export default function Home() {
   const [auth, setAuth] = useState({
