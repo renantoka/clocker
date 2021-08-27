@@ -10,10 +10,10 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react'
 
-import { Logo } from "../Logo";
-import firebase, { persistenceMode } from "../../config/firebase";
+import { Logo } from '../Logo'
+import { firebaseClient, persistenceMode } from '../../config/firebase'
 import Link from 'next/link'
 
 const validationSchema = yup.object().shape({
@@ -21,8 +21,7 @@ const validationSchema = yup.object().shape({
     .string()
     .email("E-mail inválido")
     .required("Preenchimento obrigatório"),
-  password: yup.string().required("Preenchimento obrigatório"),
-  username: yup.string().required("Preenchimento obrigatório"),
+  password: yup.string().required("Preenchimento obrigatório")
 });
 
 export const Login = () => {
@@ -37,12 +36,12 @@ export const Login = () => {
   } =
     useFormik({
       onSubmit: async (values, form) => {
-        firebase.auth().setPersistence(persistenceMode)
+        firebaseClient.auth().setPersistence(persistenceMode)
 
         try {
-
-        const user = await firebase.auth().signInWithEmailAndPassword(values.email, values.password)
+        const user = await firebaseClient.auth().signInWithEmailAndPassword(values.email, values.password)
         console.log(user)
+        console.log(firebaseClient.auth().currentUser)
         } catch (error) {
           console.log('ERROR ', error)
         }

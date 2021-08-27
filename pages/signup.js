@@ -1,5 +1,6 @@
-import { useFormik } from "formik";
-import * as yup from "yup";
+/* eslint-disable react/no-children-prop */
+import { useFormik } from 'formik'
+import * as yup from 'yup'
 
 import {
   Container,
@@ -13,11 +14,11 @@ import {
   FormHelperText,
   InputGroup,
   InputLeftAddon,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react'
 
-import { Logo } from "../components/Logo";
-import firebase from "../config/firebase";
-import Link from "next/link";
+import { Logo } from '../components/Logo'
+import { firebaseClient } from '../config/firebase'
+import Link from 'next/link'
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -28,7 +29,7 @@ const validationSchema = yup.object().shape({
   username: yup.string().required("Preenchimento obrigatório"),
 });
 
-export default function signup() {
+export default function Home() {
   const { 
     values, 
     errors, 
@@ -42,8 +43,7 @@ export default function signup() {
       onSubmit: async (values, form) => {
         
         try {
-
-        const user = await firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
+        const user = await firebaseClient.auth().createUserWithEmailAndPassword(values.email, values.password)
         console.log(user)
         } catch (error) {
           console.log('ERROR ', error)

@@ -1,8 +1,7 @@
-export default function Schedule() {
+export default function Schedule() { 
     return (
-      <div>
-        Verificar horários
-      </div>
-    )
-  }
-  
+        <div>
+          Verificar horários
+        </div>
+      )
+}
