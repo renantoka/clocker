@@ -9,14 +9,11 @@ import {
   Text,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   FormHelperText,
-  InputGroup,
-  InputLeftAddon,
 } from "@chakra-ui/react";
 
 import { Logo } from "../components/Logo";
-import firebase from "../config/firebase";
+import firebase, { persistenceMode } from "../config/firebase";
 import Link from 'next/link'
 
 const validationSchema = yup.object().shape({
@@ -40,7 +37,8 @@ export default function Home() {
   } =
     useFormik({
       onSubmit: async (values, form) => {
-        
+        firebase.auth().setPersistence(persistenceMode)
+
         try {
 
         const user = await firebase.auth().signInWithEmailAndPassword(values.email, values.password)
@@ -57,6 +55,7 @@ export default function Home() {
       },
     });
 
+  
   return (
     <Container p={4} centerContent>
       <Logo />
