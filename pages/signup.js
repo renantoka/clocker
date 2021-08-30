@@ -2,6 +2,8 @@
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 
+import axios from 'axios'
+
 import {
   Container,
   Box,
@@ -30,21 +32,33 @@ const validationSchema = yup.object().shape({
 });
 
 export default function Home() {
-  const { 
-    values, 
-    errors, 
-    touched, 
-    handleChange, 
-    handleBlur, 
-    handleSubmit, 
-    isSubmitting 
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isSubmitting
   } =
     useFormik({
       onSubmit: async (values, form) => {
-        
+
         try {
-        const user = await firebaseClient.auth().createUserWithEmailAndPassword(values.email, values.password)
-        console.log(user)
+          const user = await firebaseClient.auth().createUserWithEmailAndPassword(values.email, values.password)
+          console.log(user)
+
+          const { data } = await axios({
+            method: 'post',
+            url: '/api/profile',
+            data: {
+              username: values.username
+            },
+            header: {
+              'Authentication': `Bearer ${user.getToken()}`
+            },
+          })
+
         } catch (error) {
           console.log('ERROR ', error)
         }
@@ -114,11 +128,11 @@ export default function Home() {
         </FormControl>
 
         <Box p={4}>
-          <Button 
-          colorScheme="blue"
-          width="100%" 
-          onClick={handleSubmit}
-          isLoading={isSubmitting}
+          <Button
+            colorScheme="blue"
+            width="100%"
+            onClick={handleSubmit}
+            isLoading={isSubmitting}
           >
             Entrar
           </Button>

@@ -13,8 +13,8 @@ import {
 } from '@chakra-ui/react'
 
 import { Logo } from '../Logo'
-import { firebaseClient, persistenceMode } from '../../config/firebase/client'
 import Link from 'next/link'
+import { useAuth } from '../Auth'
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -25,27 +25,18 @@ const validationSchema = yup.object().shape({
 });
 
 export const Login = () => {
-  const { 
-    values, 
-    errors, 
-    touched, 
-    handleChange, 
-    handleBlur, 
-    handleSubmit, 
-    isSubmitting 
+  const [, { login }] = useAuth()
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isSubmitting
   } =
     useFormik({
-      onSubmit: async (values, form) => {
-        firebaseClient.auth().setPersistence(persistenceMode)
-        
-        try {
-        const user = await firebaseClient.auth().signInWithEmailAndPassword(values.email, values.password)
-        console.log(user)
-        console.log(firebaseClient.auth().currentUser)
-        } catch (error) {
-          console.log('ERROR ', error)
-        }
-      },
+      onSubmit: login,
       validationSchema,
       initialValues: {
         email: "",
@@ -54,7 +45,7 @@ export const Login = () => {
       },
     });
 
-  
+
   return (
     <Container p={4} centerContent>
       <Logo />
@@ -94,11 +85,11 @@ export const Login = () => {
         </FormControl>
 
         <Box p={4}>
-          <Button 
-          colorScheme="blue"
-          width="100%" 
-          onClick={handleSubmit}
-          isLoading={isSubmitting}
+          <Button
+            colorScheme="blue"
+            width="100%"
+            onClick={handleSubmit}
+            isLoading={isSubmitting}
           >
             Entrar
           </Button>
