@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { firebaseClient, persistenceMode } from '../../config/firebase/client'
 
 const AuthContext = React.createContext([{}, () => { }])
@@ -31,24 +32,26 @@ export const useAuth = () => {
     return [auth, { login, logout, signUp }]
 }
 
-export const AuthProvider = ({ Children }) => {
+export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({
         loading: true,
         user: false
     })
 
     useEffect(() => {
-        firebaseClient.auth().onAuthStateChanged((user) => {
+        const unsubscribe = firebaseClient.auth().onAuthStateChanged(user => {
             setAuth({
                 loading: false,
                 user,
             });
         });
+
+        return ( ) => unsubscribe()
     }, []);
 
     return (
         <AuthContext.Provider value={[auth, setAuth]}>
-            {Children}
+            {children}
         </AuthContext.Provider>
     )
 }

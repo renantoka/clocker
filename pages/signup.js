@@ -1,8 +1,8 @@
 /* eslint-disable react/no-children-prop */
 import { useFormik } from 'formik'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import * as yup from 'yup'
-
-import axios from 'axios'
 
 import {
   Container,
@@ -12,14 +12,12 @@ import {
   Text,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   FormHelperText,
   InputGroup,
   InputLeftAddon,
 } from '@chakra-ui/react'
 
-import { Logo } from '../components/Logo'
-import { firebaseClient } from '../config/firebase'
+import { Logo, useAuth } from '../components'
 import Link from 'next/link'
 
 const validationSchema = yup.object().shape({
@@ -32,6 +30,9 @@ const validationSchema = yup.object().shape({
 });
 
 export default function Home() {
+  const [auth, { signUp }] = useAuth()
+  const router = useRouter()
+
   const {
     values,
     errors,
@@ -42,27 +43,7 @@ export default function Home() {
     isSubmitting
   } =
     useFormik({
-      onSubmit: async (values, form) => {
-
-        try {
-          const user = await firebaseClient.auth().createUserWithEmailAndPassword(values.email, values.password)
-          console.log(user)
-
-          const { data } = await axios({
-            method: 'post',
-            url: '/api/profile',
-            data: {
-              username: values.username
-            },
-            header: {
-              'Authentication': `Bearer ${user.getToken()}`
-            },
-          })
-
-        } catch (error) {
-          console.log('ERROR ', error)
-        }
-      },
+     onSubmit: signUp,
       validationSchema,
       initialValues: {
         email: "",
@@ -70,6 +51,10 @@ export default function Home() {
         password: "",
       },
     });
+
+    useEffect(() => {
+        auth.user && router.push('/reserve')
+    }, [auth.user])
 
   return (
     <Container p={4} centerContent>

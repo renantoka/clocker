@@ -1,5 +1,7 @@
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 import {
   Container,
@@ -12,9 +14,8 @@ import {
   FormHelperText,
 } from '@chakra-ui/react'
 
-import { Logo } from '../Logo'
+import { Logo, useAuth } from '../components/'
 import Link from 'next/link'
-import { useAuth } from '../Auth'
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -24,8 +25,10 @@ const validationSchema = yup.object().shape({
   password: yup.string().required("Preenchimento obrigatório")
 });
 
-export const Login = () => {
-  const [, { login }] = useAuth()
+export default function Login() {
+  const [auth, { login }] = useAuth()
+  const router = useRouter()
+
   const {
     values,
     errors,
@@ -45,6 +48,9 @@ export const Login = () => {
       },
     });
 
+    useEffect(() => {
+      auth.user && router.push("/reserve");
+    }, [auth.user]);
 
   return (
     <Container p={4} centerContent>
